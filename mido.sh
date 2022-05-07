@@ -67,6 +67,14 @@ USEER="shashank"
 
 TOOLCHAIN="clang"
 
+post_build() {
+        #Post MD5Checksum alongwith for easeness
+        MD5CHECK=$(md5sum "$1" | cut -d' ' -f1)
+
+        curl --progress-bar -X POST "https://filebin.net/" -H "accept: */*" -H "bin: ydvxxly37y3hb6md" -H "filename: $ZIP" -H "Content-Type: application/octet-stream" -d @"$1"
+        echo "build finished in $(($Diff / 60)) minutes and $(($Diff % 60)) seconds | <b>MD5 Checksum : </b><code>$MD5CHECK</code>"
+}
+
 
 # Now let's clone gcc/clang on HOME dir
 # And after that , the script start the compilation of the kernel it self
@@ -167,6 +175,7 @@ KERVER=$(make kernelversion)
                 zip -r9 "$ZIP" * -x .git README.md LICENSE *placeholder
                 curl -sLo zipsigner-3.0.jar https://raw.githubusercontent.com/shashank1439/anykernel/zipper/zipsigner-3.0.jar
                 java -jar zipsigner-3.0.jar "$ZIP".zip "$ZIP"-signed.zip
+		post_build "$ZIP"-signed.zip "$CHATID"
                 cd ..
                 rm -rf error.log
                 rm -rf out

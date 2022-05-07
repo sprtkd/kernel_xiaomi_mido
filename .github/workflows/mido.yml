@@ -25,3 +25,8 @@ jobs:
       env:
          CHATID: ${{ secrets.CHAT_ID }}
          API_BOT: ${{ secrets.BOT_API }}
+    - name: Uploading zip!
+      uses: actions/upload-artifact@v3
+      with:
+          name: kernel.zip
+          path: zip/kernel.zip
